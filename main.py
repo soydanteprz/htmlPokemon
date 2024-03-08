@@ -44,7 +44,6 @@ def getPokemonData(pokemon):
         evolutionChainResponse = requests.get(evolutionChainUrl)
         ability_descriptions = {}
 
-
         if evolutionChainResponse.status_code == 200:
             evolutionChainData = evolutionChainResponse.json()
             evolutionChainId = evolutionChainData['evolution_chain']['url'].split('/')[-2]
@@ -96,7 +95,6 @@ def getPokemonData(pokemon):
                 for damage in type_data['damage_relations']['double_damage_to']:
                     doubleDamageTo.append(damage['name'])
 
-
         return {
             'name': name,
             'id': id,
@@ -123,88 +121,102 @@ def htmlTemplate(data):
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{data['name'].capitalize()}</title>
+        <title>{data['name'].capitalize()} - {data['id']}</title>
         <style>
             body {{
                 background-color: {fontAndBackgroundColors[data['types'][0]["type"]["name"]]["background"]};
                 color: {fontAndBackgroundColors[data['types'][0]["type"]["name"]]["font"]};
                 font-family: Arial, sans-serif;
-                padding: 20px;
-                margin: 0;
+                font-size: 16px;
+            }}
+            .container {{
                 display: flex;
-                justify-content: center;
+                flex-direction: column;
                 align-items: center;
-                min-height: 100vh;
-                font-size: 18px;
+                padding: 20px;
+                margin: 20px;
+            }}
+            .column {{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: 20px;
+            }}
+            .column > div {{
+                padding: 30px;
+                margin: 20px;
+                text-align: left;
+            }}
+            .evolutions {{
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 30px;
+                margin: 20px;
+            }}
+            .evolutions > div {{
+                padding: 10px;
+                margin: 10px;
+                text-align: center;
             }}
             img {{
                 width: 200px;
                 height: 200px;
-                border-radius: 50%;
-                margin-bottom: 20px;
-            }}
-            
-            ul, ol {{
-                padding: 0;
-            }}
-            
-            li {{
-                margin-bottom: 10px;
             }}
         </style>
     </head>
     <body>
-        <div style="text-align: center; padding: 30px; margin: 20px;">
-            <h1>{data['name'].capitalize()} - {data['id']}</h1>
-            <img src="{data['image']}" alt="{data['name']}">
-            <p>Base Experience: {data['baseExperience']}</p>
-            <p>Weight: {data['weight']}</p>
-            <p>Height: {data['height']}</p>
-        </div>
-        <div style="text-align: left; padding: 30px; margin: 20px;">
-            <h3>Types</h3>
-            <p>
-                <ul>
-                    {"".join([f'<li>{type["type"]["name"].capitalize()}</li>' for type in data['types']])}
-                </ul>
-            </p>
-            <h3>Stats</h3>
-            <p> 
-                <ul>
-                    {"".join([f'<li>{stat.capitalize()}: {data["stats"][stat]}</li>' for stat in data['stats']])}
-                </ul
-            </p>
-        </div>
-        <div style="text-align: left; padding: 30px; margin: 20px; max-width: 400px;">
-            <h3>Abilities</h3> 
-                <ul>
-                    {"".join([f'<li>{ability.capitalize()}: {data["ability_descriptions"][ability]}</li>' for ability in data['abilities']])}
-                </ul>
-            </p>
-            <h3>Double damage from:</h3>
-            <p>
-                <ul>
-                    {"".join([f'<li>{type.capitalize()}</li>' for type in data['DoubleDamageFrom']])}
-                </ul>
-            </p>
-            
-            <h3>Double damage to:</h3>
-            <p>
-                <ul>
-                    {"".join([f'<li>{type.capitalize()}</li>' for type in data['DoubleDamageTo']])} 
-                </ul>
-            </p>
-        </div>
-        <div style="padding: 30px; margin: 20px;">
-            
-            <h3>Evolutions:</h3>
-            <p>
-                <ol>
-                    {"".join([f'<li>{evolution["name"].capitalize()} <img src="{evolution["image"]}" alt="{evolution["name"]}"></li>' for evolution in data['evolution']])}
+        <div class="container">
+            <div style="text-align: center;">
+                <h1>{data['name'].capitalize()} - {data['id']}</h1>
+                <img src="{data['image']}" alt="{data['name']}">
+                <p>Base Experience: {data['baseExperience']}</p>
+                <p>Weight: {data['weight']}</p>
+                <p>Height: {data['height']}</p>
+            </div>
+            <div class="column">
+                <div>
+                    <h3>Types</h3>
+                    <p>
+                        <ul>
+                            {"".join([f'<li>{type["type"]["name"].capitalize()}</li>' for type in data['types']])}
+                        </ul>
+                    </p>
+                    <h3>Stats</h3>
+                    <p> 
+                        <ul>
+                            {"".join([f'<li>{stat.capitalize()}: {data["stats"][stat]}</li>' for stat in data['stats']])}
+                        </ul>
+                    </p>
+                </div>
+                <div>
+                    <h3>Abilities</h3> 
+                    <ul>
+                        {"".join([f'<li>{ability.capitalize()}: {data["ability_descriptions"][ability]}</li>' for ability in data['abilities']])}
+                    </ul>
+                    <h3>Double damage from:</h3>
+                    <p>
+                        <ul>
+                            {"".join([f'<li>{type.capitalize()}</li>' for type in data['DoubleDamageFrom']])}
+                        </ul>
+                    </p>
+                    <h3>Double damage to:</h3>
+                    <p>
+                        <ul>
+                            {"".join([f'<li>{type.capitalize()}</li>' for type in data['DoubleDamageTo']])} 
+                        </ul>
+                    </p>
+                </div>
+            </div>
+            <div class="evolutions">
+                <h3>Evolutions:</h3>
+                <br/>
+                <br/>
+                <ol style="display: flex; padding: 0; padding-top: 50px; margin: 0;">
+                    {"".join([f'<li><p>{evolution["name"].capitalize()}</p><img src="{evolution["image"]}" alt="{evolution["name"]}"></li>' for evolution in data['evolution']])}
                 </ol>
-            </p>
+            </div>
         </div>
-            
     </body>
     </html>
     '''
@@ -216,7 +228,6 @@ def createHTMLFile(data):
         os.makedirs('outputs')
     with open(f'outputs/{data["name"]}.html', 'w') as file:
         file.write(htmlTemplate(data))
-
 
 
 def main():

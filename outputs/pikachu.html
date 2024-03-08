@@ -4,88 +4,102 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Pikachu</title>
+        <title>Pikachu - 25</title>
         <style>
             body {
                 background-color: yellow;
                 color: black;
                 font-family: Arial, sans-serif;
-                padding: 20px;
-                margin: 0;
+                font-size: 16px;
+            }
+            .container {
                 display: flex;
-                justify-content: center;
+                flex-direction: column;
                 align-items: center;
-                min-height: 100vh;
-                font-size: 18px;
+                padding: 20px;
+                margin: 20px;
+            }
+            .column {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: 20px;
+            }
+            .column > div {
+                padding: 30px;
+                margin: 20px;
+                text-align: left;
+            }
+            .evolutions {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 30px;
+                margin: 20px;
+            }
+            .evolutions > div {
+                padding: 10px;
+                margin: 10px;
+                text-align: center;
             }
             img {
                 width: 200px;
                 height: 200px;
-                border-radius: 50%;
-                margin-bottom: 20px;
-            }
-            
-            ul, ol {
-                padding: 0;
-            }
-            
-            li {
-                margin-bottom: 10px;
             }
         </style>
     </head>
     <body>
-        <div style="text-align: center; padding: 30px; margin: 20px;">
-            <h1>Pikachu - 25</h1>
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="pikachu">
-            <p>Base Experience: 112</p>
-            <p>Weight: 60</p>
-            <p>Height: 4</p>
-        </div>
-        <div style="text-align: left; padding: 30px; margin: 20px;">
-            <h3>Types</h3>
-            <p>
-                <ul>
-                    <li>Electric</li>
-                </ul>
-            </p>
-            <h3>Stats</h3>
-            <p> 
-                <ul>
-                    <li>Hp: 35</li><li>Attack: 55</li><li>Defense: 40</li><li>Special-attack: 50</li><li>Special-defense: 50</li><li>Speed: 90</li>
-                </ul
-            </p>
-        </div>
-        <div style="text-align: left; padding: 30px; margin: 20px; max-width: 400px;">
-            <h3>Abilities</h3> 
-                <ul>
-                    <li>Static: Has a 30% chance of paralyzing attacking Pokémon on contact.</li><li>Lightning-rod: Redirects single-target electric moves to this Pokémon where possible.  Absorbs Electric moves, raising Special Attack one stage.</li>
-                </ul>
-            </p>
-            <h3>Double damage from:</h3>
-            <p>
-                <ul>
-                    <li>Ground</li>
-                </ul>
-            </p>
-            
-            <h3>Double damage to:</h3>
-            <p>
-                <ul>
-                    <li>Flying</li><li>Water</li> 
-                </ul>
-            </p>
-        </div>
-        <div style="padding: 30px; margin: 20px;">
-            
-            <h3>Evolutions:</h3>
-            <p>
-                <ol>
-                    <li>Pichu <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png" alt="pichu"></li><li>Pikachu <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="pikachu"></li><li>Raichu <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png" alt="raichu"></li>
+        <div class="container">
+            <div style="text-align: center;">
+                <h1>Pikachu - 25</h1>
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="pikachu">
+                <p>Base Experience: 112</p>
+                <p>Weight: 60</p>
+                <p>Height: 4</p>
+            </div>
+            <div class="column">
+                <div>
+                    <h3>Types</h3>
+                    <p>
+                        <ul>
+                            <li>Electric</li>
+                        </ul>
+                    </p>
+                    <h3>Stats</h3>
+                    <p> 
+                        <ul>
+                            <li>Hp: 35</li><li>Attack: 55</li><li>Defense: 40</li><li>Special-attack: 50</li><li>Special-defense: 50</li><li>Speed: 90</li>
+                        </ul>
+                    </p>
+                </div>
+                <div>
+                    <h3>Abilities</h3> 
+                    <ul>
+                        <li>Static: Has a 30% chance of paralyzing attacking Pokémon on contact.</li><li>Lightning-rod: Redirects single-target electric moves to this Pokémon where possible.  Absorbs Electric moves, raising Special Attack one stage.</li>
+                    </ul>
+                    <h3>Double damage from:</h3>
+                    <p>
+                        <ul>
+                            <li>Ground</li>
+                        </ul>
+                    </p>
+                    <h3>Double damage to:</h3>
+                    <p>
+                        <ul>
+                            <li>Flying</li><li>Water</li> 
+                        </ul>
+                    </p>
+                </div>
+            </div>
+            <div class="evolutions">
+                <h3>Evolutions:</h3>
+                <br/>
+                <br/>
+                <ol style="display: flex; padding: 0; padding-top: 50px; margin: 0;">
+                    <li><p>Pichu</p><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png" alt="pichu"></li><li><p>Pikachu</p><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="pikachu"></li><li><p>Raichu</p><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png" alt="raichu"></li>
                 </ol>
-            </p>
+            </div>
         </div>
-            
     </body>
     </html>
     

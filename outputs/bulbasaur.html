@@ -4,88 +4,102 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Bulbasaur</title>
+        <title>Bulbasaur - 1</title>
         <style>
             body {
                 background-color: green;
                 color: black;
                 font-family: Arial, sans-serif;
-                padding: 20px;
-                margin: 0;
+                font-size: 16px;
+            }
+            .container {
                 display: flex;
-                justify-content: center;
+                flex-direction: column;
                 align-items: center;
-                min-height: 100vh;
-                font-size: 18px;
+                padding: 20px;
+                margin: 20px;
+            }
+            .column {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: 20px;
+            }
+            .column > div {
+                padding: 30px;
+                margin: 20px;
+                text-align: left;
+            }
+            .evolutions {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 30px;
+                margin: 20px;
+            }
+            .evolutions > div {
+                padding: 10px;
+                margin: 10px;
+                text-align: center;
             }
             img {
                 width: 200px;
                 height: 200px;
-                border-radius: 50%;
-                margin-bottom: 20px;
-            }
-            
-            ul, ol {
-                padding: 0;
-            }
-            
-            li {
-                margin-bottom: 10px;
             }
         </style>
     </head>
     <body>
-        <div style="text-align: center; padding: 30px; margin: 20px;">
-            <h1>Bulbasaur - 1</h1>
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="bulbasaur">
-            <p>Base Experience: 64</p>
-            <p>Weight: 69</p>
-            <p>Height: 7</p>
-        </div>
-        <div style="text-align: left; padding: 30px; margin: 20px;">
-            <h3>Types</h3>
-            <p>
-                <ul>
-                    <li>Grass</li><li>Poison</li>
-                </ul>
-            </p>
-            <h3>Stats</h3>
-            <p> 
-                <ul>
-                    <li>Hp: 45</li><li>Attack: 49</li><li>Defense: 49</li><li>Special-attack: 65</li><li>Special-defense: 65</li><li>Speed: 45</li>
-                </ul
-            </p>
-        </div>
-        <div style="text-align: left; padding: 30px; margin: 20px; max-width: 400px;">
-            <h3>Abilities</h3> 
-                <ul>
-                    <li>Overgrow: Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.</li><li>Chlorophyll: Doubles Speed during strong sunlight.</li>
-                </ul>
-            </p>
-            <h3>Double damage from:</h3>
-            <p>
-                <ul>
-                    <li>Flying</li><li>Poison</li><li>Bug</li><li>Fire</li><li>Ice</li><li>Ground</li><li>Psychic</li>
-                </ul>
-            </p>
-            
-            <h3>Double damage to:</h3>
-            <p>
-                <ul>
-                    <li>Ground</li><li>Rock</li><li>Water</li><li>Grass</li><li>Fairy</li> 
-                </ul>
-            </p>
-        </div>
-        <div style="padding: 30px; margin: 20px;">
-            
-            <h3>Evolutions:</h3>
-            <p>
-                <ol>
-                    <li>Bulbasaur <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="bulbasaur"></li><li>Ivysaur <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png" alt="ivysaur"></li><li>Venusaur <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png" alt="venusaur"></li>
+        <div class="container">
+            <div style="text-align: center;">
+                <h1>Bulbasaur - 1</h1>
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="bulbasaur">
+                <p>Base Experience: 64</p>
+                <p>Weight: 69</p>
+                <p>Height: 7</p>
+            </div>
+            <div class="column">
+                <div>
+                    <h3>Types</h3>
+                    <p>
+                        <ul>
+                            <li>Grass</li><li>Poison</li>
+                        </ul>
+                    </p>
+                    <h3>Stats</h3>
+                    <p> 
+                        <ul>
+                            <li>Hp: 45</li><li>Attack: 49</li><li>Defense: 49</li><li>Special-attack: 65</li><li>Special-defense: 65</li><li>Speed: 45</li>
+                        </ul>
+                    </p>
+                </div>
+                <div>
+                    <h3>Abilities</h3> 
+                    <ul>
+                        <li>Overgrow: Strengthens grass moves to inflict 1.5× damage at 1/3 max HP or less.</li><li>Chlorophyll: Doubles Speed during strong sunlight.</li>
+                    </ul>
+                    <h3>Double damage from:</h3>
+                    <p>
+                        <ul>
+                            <li>Flying</li><li>Poison</li><li>Bug</li><li>Fire</li><li>Ice</li><li>Ground</li><li>Psychic</li>
+                        </ul>
+                    </p>
+                    <h3>Double damage to:</h3>
+                    <p>
+                        <ul>
+                            <li>Ground</li><li>Rock</li><li>Water</li><li>Grass</li><li>Fairy</li> 
+                        </ul>
+                    </p>
+                </div>
+            </div>
+            <div class="evolutions">
+                <h3>Evolutions:</h3>
+                <br/>
+                <br/>
+                <ol style="display: flex; padding: 0; padding-top: 50px; margin: 0;">
+                    <li><p>Bulbasaur</p><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="bulbasaur"></li><li><p>Ivysaur</p><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png" alt="ivysaur"></li><li><p>Venusaur</p><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png" alt="venusaur"></li>
                 </ol>
-            </p>
+            </div>
         </div>
-            
     </body>
     </html>
     
