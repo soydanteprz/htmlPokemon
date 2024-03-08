@@ -1,9 +1,9 @@
+import os
+
 import requests
-import json
-import flask
 
 # Get the data from the API
-URL = 'https://pokeapi.co/api/v2/pokemon'
+URL = 'https://pokeapi.co/api/v2/'
 fontAndBackgroundColors = {
     'fire': {
         'background': 'red',
@@ -25,26 +25,62 @@ fontAndBackgroundColors = {
 
 
 def getPokemonData(pokemon):
-    response = requests.get(f'{URL}/{pokemon}')
+    response = requests.get(f"{URL}pokemon/{pokemon}")
     if response.status_code == 200:
         data = response.json()
         name = data['name']
         id = data['id']
         types = data['types']
         image = data['sprites']['front_default']
+        baseExperience = data['base_experience']
+        weight = data['weight']
+        height = data['height']
         stats = {stat['stat']['name']: stat['base_stat'] for stat in data['stats']}
         abilities = [ability['ability']['name'] for ability in data['abilities']]
+        doubleDamageFrom = []
+        doubleDamageTo = []
+        evolutionChainUrl = data['species']['url']
+        evolutionChainResponse = requests.get(evolutionChainUrl)
         ability_descriptions = {}
+
+
+        if evolutionChainResponse.status_code == 200:
+            evolutionChainData = evolutionChainResponse.json()
+            evolutionChainId = evolutionChainData['evolution_chain']['url'].split('/')[-2]
+            evolutionChainResponse = requests.get(f"{URL}evolution-chain/{evolutionChainId}")
+
+            if evolutionChainResponse.status_code == 200:
+                evolutionChainData = evolutionChainResponse.json()
+                evolution = []
+                chain = evolutionChainData['chain']
+                while chain['evolves_to']:
+                    evolution.append(chain['species']['name'])
+                    chain = chain['evolves_to'][0]
+                evolution.append(chain['species']['name'])
+            else:
+                evolution = None
+        else:
+            evolution = None
+
         for ability_name in abilities:
-            ability_url = f"https://pokeapi.co/api/v2/ability/{ability_name}"
-            ability_response = requests.get(ability_url)
+            abilityUrl = f"{URL}ability/{ability_name}"
+            ability_response = requests.get(abilityUrl)
             if ability_response.status_code == 200:
                 ability_data = ability_response.json()
                 for effect in ability_data['effect_entries']:
                     if effect['language']['name'] == 'en':
                         ability_descriptions[ability_name] = effect['short_effect']
                         break
-                        
+
+        for type in types:
+            type_url = type['type']['url']
+            type_response = requests.get(type_url)
+            if type_response.status_code == 200:
+                type_data = type_response.json()
+                for damage in type_data['damage_relations']['double_damage_from']:
+                    doubleDamageFrom.append(damage['name'])
+                for damage in type_data['damage_relations']['double_damage_to']:
+                    doubleDamageTo.append(damage['name'])
 
 
         return {
@@ -54,10 +90,17 @@ def getPokemonData(pokemon):
             'image': image,
             'stats': stats,
             'abilities': abilities,
-            'ability_descriptions': ability_descriptions
+            'ability_descriptions': ability_descriptions,
+            'DoubleDamageFrom': doubleDamageFrom,
+            'DoubleDamageTo': doubleDamageTo,
+            'evolution': evolution,
+            'baseExperience': baseExperience,
+            'weight': weight,
+            'height': height,
         }
     else:
         return None
+
 
 def htmlTemplate(data):
     html = f'''
@@ -67,73 +110,108 @@ def htmlTemplate(data):
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{data['name'].capitalize()}</title>
+        <style>
+            body {{
+                background-color: {fontAndBackgroundColors[data['types'][0]["type"]["name"]]["background"]};
+                color: {fontAndBackgroundColors[data['types'][0]["type"]["name"]]["font"]};
+                font-family: Arial, sans-serif;
+                padding: 20px;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                font-size: 18px;
+            }}
+            img {{
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                margin-bottom: 20px;
+            }}
+            
+            ul, ol {{
+                padding: 0;
+            }}
+            
+            li {{
+                margin-bottom: 10px;
+            }}
+        </style>
     </head>
     <body>
-        <h1>{data['name'].capitalize()}</h1>
-        <img src="{data['image']}" alt="{data['name']}">
-        <p>Types: 
-            {"".join([f'<span style="background-color: {fontAndBackgroundColors[type["type"]["name"]]["background"]}; color: {fontAndBackgroundColors[type["type"]["name"]]["font"]}; padding: 5px; border-radius: 5px; margin: 5px;">{type["type"]["name"]}</span>' for type in data['types']])}
-        </p>
-        <p>Stats: 
-            <ul>
-                {"".join([f'<li>{stat}: {data["stats"][stat]}</li>' for stat in data['stats']])}
-            </ul>
-        </p>
-        <p>Abilities: 
-            <ul>
-                {"".join([f'<li>{ability}: {data["ability_descriptions"][ability]}</li>' for ability in data['abilities']])}
-            </ul>
-        </p>
+        <div style="text-align: center; padding: 30px; margin: 20px;">
+            <h1>{data['name'].capitalize()} - {data['id']}</h1>
+            <img src="{data['image']}" alt="{data['name']}">
+            <p>Base Experience: {data['baseExperience']}</p>
+            <p>Weight: {data['weight']}</p>
+            <p>Height: {data['height']}</p>
+        </div>
+        <div style="text-align: left; padding: 30px; margin: 20px;">
+            <h3>Types</h3>
+            <p>
+                <ul>
+                    {"".join([f'<li>{type["type"]["name"].capitalize()}</li>' for type in data['types']])}
+                </ul>
+            </p>
+            <h3>Stats</h3>
+            <p> 
+                <ul>
+                    {"".join([f'<li>{stat.capitalize()}: {data["stats"][stat]}</li>' for stat in data['stats']])}
+                </ul
+            </p>
+        </div>
+        <div style="text-align: left; padding: 30px; margin: 20px; max-width: 500px;">
+            <h3>Abilities</h3> 
+                <ul>
+                    {"".join([f'<li>{ability.capitalize()}: {data["ability_descriptions"][ability]}</li>' for ability in data['abilities']])}
+                </ul>
+            </p>
+            <h3>Double damage from:</h3>
+            <p>
+                <ul>
+                    {"".join([f'<li>{type.capitalize()}</li>' for type in data['DoubleDamageFrom']])}
+                </ul>
+            </p>
+            
+            <h3>Double damage to:</h3>
+            <p>
+                <ul>
+                    {"".join([f'<li>{type.capitalize()}</li>' for type in data['DoubleDamageTo']])} 
+                </ul>
+            </p>
+            
+            <h3>Evolutions:</h3>
+            <p>
+                <ol>
+                    {"".join([f'<li>{pokemon.capitalize()}</li>' for pokemon in data['evolution']])}
+                </ol>
+            </p>
+        </div>
+            
     </body>
     </html>
     '''
     return html
 
+
 def createHTMLFile(data):
-    html = htmlTemplate(data)
-    with open('pokemon.html', 'w') as file:
-        file.write(html)
-
-#
-#
-# def createHTMLFile(data):
-#     with open('pokemon.html', 'w') as file:
-#         file.write('<!DOCTYPE html>')
-#         file.write('<html>')
-#         file.write('<head>')
-#         getBackgroundAndFont()
-#         # Pokemon name
-#
-#         file.write(f'<h1>{data["name"]}</h1>')
-#         # Pokemon types
-#         file.write('<p>Type: ')
-#         for type in data['types']:
-#             file.write(
-#                 f'<span style="background-color: {fontAndBackgroundColors[type["type"]["name"]]["background"]}; color: {fontAndBackgroundColors[type["type"]["name"]]["font"]}; padding: 5px; border-radius: 5px; margin: 5px;">{type["type"]["name"]}</span>')
-#         file.write('</p>')
-
-
-def getBackgroundAndFont():
-    with open('pokemon.html', 'w') as file:
-        file.write('<style>')
-        file.write('body {')
-        file.write('background-color: #f3f4f6;')
-        file.write('font-family: Arial, sans-serif;')
-        file.write('}')
-        file.write('</style>')
-        file.write('</head>')
-        file.write('<body>')
-
+    if not os.path.exists('outputs'):
+        os.makedirs('outputs')
+    with open(f'outputs/{data["name"]}.html', 'w') as file:
+        file.write(htmlTemplate(data))
 
 
 
 def main():
-    pokemon = 'charmander'
-    data = getPokemonData(pokemon)
-    # createHTMLFile(data)
-    print('File created successfully')
-    print(data)
-    createHTMLFile(data)
+    pokemons = ['pikachu', 'bulbasaur', 'charmander', 'squirtle']
+    for pokemon in pokemons:
+        data = getPokemonData(pokemon)
+        if data:
+            createHTMLFile(data)
+            print(f'{pokemon} created')
+        else:
+            print(f'{pokemon} not found')
 
 
 if __name__ == '__main__':
