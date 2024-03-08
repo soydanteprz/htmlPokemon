@@ -39,6 +39,7 @@ def getPokemonData(pokemon):
         abilities = [ability['ability']['name'] for ability in data['abilities']]
         doubleDamageFrom = []
         doubleDamageTo = []
+        evolution = None
         evolutionChainUrl = data['species']['url']
         evolutionChainResponse = requests.get(evolutionChainUrl)
         ability_descriptions = {}
@@ -54,9 +55,22 @@ def getPokemonData(pokemon):
                 evolution = []
                 chain = evolutionChainData['chain']
                 while chain['evolves_to']:
-                    evolution.append(chain['species']['name'])
+                    species = chain['species']['name']
+                    speciesResponse = requests.get(f"{URL}pokemon/{species}")
+                    if speciesResponse.status_code == 200:
+                        speciesData = speciesResponse.json()
+                        evolution.append({'name': species, 'image': speciesData['sprites']['front_default']})
+                    else:
+                        evolution.append({'name': species, 'image': None})
                     chain = chain['evolves_to'][0]
-                evolution.append(chain['species']['name'])
+                species = chain['species']['name']
+                speciesResponse = requests.get(f"{URL}pokemon/{species}")
+                if speciesResponse.status_code == 200:
+                    speciesData = speciesResponse.json()
+                    speciesImage = speciesData['sprites']['front_default']
+                    evolution.append({'name': species, 'image': speciesData['sprites']['front_default']})
+                else:
+                    evolution.append({'name': species, 'image': None})
             else:
                 evolution = None
         else:
@@ -161,7 +175,7 @@ def htmlTemplate(data):
                 </ul
             </p>
         </div>
-        <div style="text-align: left; padding: 30px; margin: 20px; max-width: 500px;">
+        <div style="text-align: left; padding: 30px; margin: 20px; max-width: 400px;">
             <h3>Abilities</h3> 
                 <ul>
                     {"".join([f'<li>{ability.capitalize()}: {data["ability_descriptions"][ability]}</li>' for ability in data['abilities']])}
@@ -180,11 +194,13 @@ def htmlTemplate(data):
                     {"".join([f'<li>{type.capitalize()}</li>' for type in data['DoubleDamageTo']])} 
                 </ul>
             </p>
+        </div>
+        <div style="padding: 30px; margin: 20px;">
             
             <h3>Evolutions:</h3>
             <p>
                 <ol>
-                    {"".join([f'<li>{pokemon.capitalize()}</li>' for pokemon in data['evolution']])}
+                    {"".join([f'<li>{evolution["name"].capitalize()} <img src="{evolution["image"]}" alt="{evolution["name"]}"></li>' for evolution in data['evolution']])}
                 </ol>
             </p>
         </div>
